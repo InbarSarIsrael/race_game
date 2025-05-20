@@ -1,6 +1,8 @@
 package com.example.racegame.logic
 
+import androidx.collection.emptyLongList
 import com.example.racegame.utilities.SignalManager
+import com.example.racegame.utilities.SingleSoundPlayer
 
 class GameManager(private val lifeCount: Int = 3) { // default life
 
@@ -8,18 +10,27 @@ class GameManager(private val lifeCount: Int = 3) { // default life
     {
         const val RIGHT = 1
         const val LEFT = -1
-        const val POS_LEFT = 0
-        const val POS_MIDDLE = 1
-        const val POS_RIGHT = 2
+        const val NUM_POSITIONS = 5
+        const val OBSTACLE = 1
+        const val COIN = 0
+
+//        const val POS_LEFT = 0
+//        const val POS_MIDDLE = 1
+//        const val POS_RIGHT = 2
     }
 
     var crashCount: Int = 0 // the numbers of crash
         private set
 
-    var carPosition = POS_MIDDLE
+    var score: Int = 0
+        private set
+
+    var carPosition = 2 // middle
         private set
 
     var currentObstaclePosition = -1
+
+    var currentCoinPosition = -1
 
     val isGameOver: Boolean
         get() = crashCount == lifeCount
@@ -29,16 +40,24 @@ class GameManager(private val lifeCount: Int = 3) { // default life
     {
         // move to the side
         carPosition += move
-        if (carPosition < POS_LEFT) carPosition = POS_LEFT
-        if (carPosition > POS_RIGHT) carPosition = POS_RIGHT
+        if (carPosition < 0) carPosition = 0
+        if (carPosition > (NUM_POSITIONS-1)) carPosition = NUM_POSITIONS-1
     }
 // -----------------------------------
-    fun generateObstaclePosition(): Int {
-        currentObstaclePosition = (0..2).random()
-        return currentObstaclePosition
+    fun generateElementPosition(element: Int): Int {
+        var elementPosition = (0..4).random()
+        if(element == OBSTACLE)
+            currentObstaclePosition = elementPosition
+        else
+            currentCoinPosition = elementPosition
+        return elementPosition
     }
 
-    fun checkCrash()
+    fun generateElement(): Boolean {
+        return (0..2).random() == OBSTACLE
+    }
+
+    fun checkCrack() : Boolean
     {
         // check if there is a crack between obstacle and car
         if(currentObstaclePosition == carPosition)
@@ -51,6 +70,18 @@ class GameManager(private val lifeCount: Int = 3) { // default life
             SignalManager
                 .getInstance()
                 .vibrate()
+
+            return true
         }
+        return false
+    }
+    fun checkScore() : Boolean
+    {
+        if (currentCoinPosition == carPosition)
+        {
+            score++
+            return true
+        }
+        return false
     }
 }
