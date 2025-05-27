@@ -15,12 +15,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Name: "
+            android:textColor="@color/black"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/text_LBL_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:text="name" />
     </LinearLayout>
 
@@ -34,12 +36,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Score: "
+            android:textColor="@color/black"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/text_LBL_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:text="0" />
     </LinearLayout>
 
@@ -53,12 +57,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Location: "
+            android:textColor="@color/black"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/text_LBL_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:text="location" />
     </LinearLayout>
 

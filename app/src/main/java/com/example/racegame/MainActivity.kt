@@ -42,8 +42,6 @@ private lateinit var gameManager: GameManager
 
 private val obstacleHandler = Handler(Looper.getMainLooper())
 
-private lateinit var obstacleRunnable: Runnable
-
 private var speed: Long = 800L
 
 private const val SLOW_SPEED: Long = 800L
@@ -143,23 +141,26 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         tiltDetector.start()
        BackgroundMusicPlayer.getInstance().playMusic()
+        obstacleHandler.postDelayed(obstacleRunnable, speed)
     }
 
     override fun onPause() {
         super.onPause()
         tiltDetector.stop()
         BackgroundMusicPlayer.getInstance().pauseMusic()
+        obstacleHandler.removeCallbacks(obstacleRunnable)
+    }
+
+    private val obstacleRunnable: Runnable = object : Runnable {
+        override fun run() {
+            refreshElements()
+            if (!gameManager.isGameOver) {
+                obstacleHandler.postDelayed(this, speed)
+            }
+        }
     }
 
     private fun startObstacleCoinsLoop() {
-        obstacleRunnable = object : Runnable {
-            override fun run() {
-                refreshElements()
-                if (!gameManager.isGameOver) {
-                    obstacleHandler.postDelayed(this, speed)
-                }
-            }
-        }
         obstacleHandler.postDelayed(obstacleRunnable, speed)
     }
 
