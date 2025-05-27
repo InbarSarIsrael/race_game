@@ -3,58 +3,49 @@ package com.example.racegame
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.racegame.utilities.Constants
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import androidx.core.view.isVisible
-import com.example.racegame.logic.GameManager
-import android.os.Handler
-import android.os.Looper
 import com.example.racegame.interfaces.TiltCallback
-import com.example.racegame.utilities.BackgroundMusicPlayer
-import com.example.racegame.utilities.SignalManager
-import com.example.racegame.utilities.SingleSoundPlayer
-import com.example.racegame.utilities.TiltDetector
+import com.example.racegame.logic.GameManager
+import com.example.racegame.utilities.*
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textview.MaterialTextView
 
 private lateinit var main_BTN_left: ExtendedFloatingActionButton
-
 private lateinit var main_BTN_right: ExtendedFloatingActionButton
-
 private lateinit var tiltDetector: TiltDetector
-
 private lateinit var main_IMG_car: Array<AppCompatImageView>
-
 private lateinit var main_IMG_hearts: Array<AppCompatImageView>
-
 private lateinit var main_LBL_score: MaterialTextView
-
 private lateinit var obstacles: Array<Array<AppCompatImageView>>
-
 private lateinit var coins: Array<Array<AppCompatImageView>>
-
 private lateinit var gameManager: GameManager
 
 private val obstacleHandler = Handler(Looper.getMainLooper())
-
 private var speed: Long = 800L
-
 private const val SLOW_SPEED: Long = 800L
-
 private const val FAST_SPEED: Long = 450L
-
 private var isTilt: Boolean = false
 
-
 class MainActivity : AppCompatActivity() {
+
+    private val obstacleRunnable: Runnable = object : Runnable {
+        override fun run() {
+            refreshElements()
+            if (!gameManager.isGameOver) {
+                obstacleHandler.postDelayed(this, speed)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -67,16 +58,16 @@ class MainActivity : AppCompatActivity() {
         gameManager = GameManager(main_IMG_hearts.size)
         initViews()
         initTiltDetector()
-        startObstacleCoinsLoop()
     }
 
     private fun initViews() {
-
         speed = if (intent.getBooleanExtra("IS_FAST", false)) FAST_SPEED else SLOW_SPEED
         isTilt = intent.getBooleanExtra("IS_TILT", false)
+
         main_LBL_score.text = gameManager.score.toString()
-        main_BTN_right.setOnClickListener { view: View -> moveClicked(GameManager.RIGHT) }
-        main_BTN_left.setOnClickListener { view: View -> moveClicked(GameManager.LEFT) }
+
+        main_BTN_right.setOnClickListener { moveClicked(GameManager.RIGHT) }
+        main_BTN_left.setOnClickListener { moveClicked(GameManager.LEFT) }
 
         if (isTilt) {
             main_BTN_left.visibility = View.INVISIBLE
@@ -129,7 +120,7 @@ class MainActivity : AppCompatActivity() {
             context = this,
             tiltCallback = object : TiltCallback {
                 override fun onTilt(direction: Int) {
-                    if(isTilt) {
+                    if (isTilt) {
                         moveClicked(direction)
                     }
                 }
@@ -140,7 +131,9 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         tiltDetector.start()
-       BackgroundMusicPlayer.getInstance().playMusic()
+        BackgroundMusicPlayer.getInstance().playMusic()
+
+        obstacleHandler.removeCallbacks(obstacleRunnable)
         obstacleHandler.postDelayed(obstacleRunnable, speed)
     }
 
@@ -151,55 +144,35 @@ class MainActivity : AppCompatActivity() {
         obstacleHandler.removeCallbacks(obstacleRunnable)
     }
 
-    private val obstacleRunnable: Runnable = object : Runnable {
-        override fun run() {
-            refreshElements()
-            if (!gameManager.isGameOver) {
-                obstacleHandler.postDelayed(this, speed)
-            }
-        }
-    }
-
-    private fun startObstacleCoinsLoop() {
-        obstacleHandler.postDelayed(obstacleRunnable, speed)
-    }
-
-    private fun updateCarPosition() {
-        for (i in main_IMG_car.indices) {
-            main_IMG_car[i].visibility = if (i == gameManager.carPosition) View.VISIBLE else View.INVISIBLE
-        }
-    }
-
     private fun refreshElements() {
         moveElements(obstacles, true)
         moveElements(coins, false)
         checkCollisionOnMove()
-        if(gameManager.generateElement())
+
+        if (gameManager.generateElement())
             handleGameEvents { newElement(obstacles, 1) }
         else
-            handleGameEvents { newElement(coins, 0)}
-
+            handleGameEvents { newElement(coins, 0) }
     }
 
-    private fun newElement(elements : Array<Array<AppCompatImageView>>, isObstacle: Int) {
-        var elementPosition = gameManager.generateElementPosition(isObstacle)
-
+    private fun newElement(elements: Array<Array<AppCompatImageView>>, isObstacle: Int) {
+        val elementPosition = gameManager.generateElementPosition(isObstacle)
         for (i in elements[0].indices) {
             elements[0][i].visibility = if (i == elementPosition) View.VISIBLE else View.INVISIBLE
         }
     }
 
-    private fun moveElements(elements : Array<Array<AppCompatImageView>>, isObstacle : Boolean ) {
+    private fun moveElements(elements: Array<Array<AppCompatImageView>>, isObstacle: Boolean) {
         for (i in elements[4].indices)
             elements[4][i].visibility = View.INVISIBLE
 
-        for (i in (elements.size) - 2 downTo 0){
+        for (i in (elements.size - 2) downTo 0) {
             for (j in elements[i].indices) {
                 if (elements[i][j].isVisible) {
-                    elements[i+1][j].visibility = View.VISIBLE
+                    elements[i + 1][j].visibility = View.VISIBLE
                     elements[i][j].visibility = View.INVISIBLE
-                    if((i+1) == 4)
-                    {
+
+                    if (i + 1 == 4) {
                         if (isObstacle)
                             gameManager.currentObstaclePosition = j
                         else
@@ -238,9 +211,15 @@ class MainActivity : AppCompatActivity() {
         handleGameEvents { updateCarPosition() }
     }
 
+    private fun updateCarPosition() {
+        for (i in main_IMG_car.indices) {
+            main_IMG_car[i].visibility = if (i == gameManager.carPosition) View.VISIBLE else View.INVISIBLE
+        }
+    }
+
     private fun handleGameEvents(update: () -> Unit) {
         if (gameManager.isGameOver) {
-            changeActivity("Game Over! 😭")
+            changeActivity("Game Over!")
         } else {
             update()
             if (gameManager.crashCount != 0) {
@@ -252,9 +231,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun changeActivity(message: String) {
         val intent = Intent(this, EndActivity::class.java)
-        var bundle = Bundle()
-        bundle.putString(Constants.BundleKeys.MESSAGE_KEY , message)
-        bundle.putInt(Constants.BundleKeys.SCORE_KEY , gameManager.score)
+        val bundle = Bundle().apply {
+            putString(Constants.BundleKeys.MESSAGE_KEY, message)
+            putInt(Constants.BundleKeys.SCORE_KEY, gameManager.score)
+        }
         intent.putExtras(bundle)
         startActivity(intent)
         finish()
