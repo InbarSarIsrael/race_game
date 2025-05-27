@@ -30,17 +30,6 @@ Welcome to **RaceGame**, a fun and interactive Android racing game where the pla
 - `MapFragment.kt`: Shows location of high score players on Google Maps
 - `HighScoreFragment.kt`: Displays high scores in a RecyclerView
 
-## 🗺️ Google Maps Integration
-
-To show player locations on a map:
-1. Go to [Google Cloud Console](https://console.cloud.google.com/).
-2. Enable **Maps SDK for Android**.
-3. Generate an **API key**.
-4. Add the key to `res/values/google_maps_api.xml`:
-
-```xml
-<string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">YOUR_API_KEY_HERE</string>
-
 🛠️ Tech Stack
 * Language: Kotlin
 * Platform: Android (minSdk 26)
