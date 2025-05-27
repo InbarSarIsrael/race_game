@@ -38,6 +38,9 @@ To show player locations on a map:
 3. Generate an **API key**.
 4. Add the key to `res/values/google_maps_api.xml`:
 
+```xml
+<string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">YOUR_API_KEY_HERE</string>
+
 🛠️ Tech Stack
 * Language: Kotlin
 * Platform: Android (minSdk 26)
@@ -45,6 +48,8 @@ To show player locations on a map:
 * Architecture: Fragment-based split screen layout
 * Tools: ViewBinding, RecyclerView, Google Maps SDK
 
-```xml
-<string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">YOUR_API_KEY_HERE</string>
-
+🚀 Getting Started
+1. Clone the repo
+2. Open in Android Studio.
+3. Add your Google Maps API key.
+4. Run on emulator or physical device.
