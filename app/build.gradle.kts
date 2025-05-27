@@ -35,8 +35,15 @@ android {
     }
 }
 
+
 dependencies {
 
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.0")
+    implementation("androidx.fragment:fragment-ktx:1.6.1")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation(libs.play.services.location)
+    implementation(libs.gson)
+    implementation(libs.play.services.maps)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

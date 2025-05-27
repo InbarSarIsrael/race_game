@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/blue_200"
+    tools:context=".FragmentActivity">
+
+    <FrameLayout
+        android:id="@+id/main_FRAME_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="@dimen/default_padding" />
+
+    <fragment
+        android:id="@+id/main_FRAME_map"
+        android:name="com.example.racegame.ui.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="@dimen/default_padding" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/start_BTN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/back_start"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/beige"
+        android:clickable="true"
+        android:focusable="true"
+        android:importantForAccessibility="no" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

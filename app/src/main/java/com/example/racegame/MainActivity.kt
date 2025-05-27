@@ -15,15 +15,18 @@ import androidx.core.view.isVisible
 import com.example.racegame.logic.GameManager
 import android.os.Handler
 import android.os.Looper
+import com.example.racegame.interfaces.TiltCallback
 import com.example.racegame.utilities.BackgroundMusicPlayer
 import com.example.racegame.utilities.SignalManager
 import com.example.racegame.utilities.SingleSoundPlayer
-import com.google.android.material.button.MaterialButton
+import com.example.racegame.utilities.TiltDetector
 import com.google.android.material.textview.MaterialTextView
 
 private lateinit var main_BTN_left: ExtendedFloatingActionButton
 
 private lateinit var main_BTN_right: ExtendedFloatingActionButton
+
+private lateinit var tiltDetector: TiltDetector
 
 private lateinit var main_IMG_car: Array<AppCompatImageView>
 
@@ -41,7 +44,13 @@ private val obstacleHandler = Handler(Looper.getMainLooper())
 
 private lateinit var obstacleRunnable: Runnable
 
-private const val OBSTACLE_INTERVAL: Long = 800L
+private var speed: Long = 800L
+
+private const val SLOW_SPEED: Long = 800L
+
+private const val FAST_SPEED: Long = 450L
+
+private var isTilt: Boolean = false
 
 
 class MainActivity : AppCompatActivity() {
@@ -59,13 +68,22 @@ class MainActivity : AppCompatActivity() {
         findViews()
         gameManager = GameManager(main_IMG_hearts.size)
         initViews()
+        initTiltDetector()
         startObstacleCoinsLoop()
     }
 
     private fun initViews() {
+
+        speed = if (intent.getBooleanExtra("IS_FAST", false)) FAST_SPEED else SLOW_SPEED
+        isTilt = intent.getBooleanExtra("IS_TILT", false)
         main_LBL_score.text = gameManager.score.toString()
-        main_BTN_right.setOnClickListener { view: View -> moveClicked(GameManager.RIGHT) } // 1 for right
-        main_BTN_left.setOnClickListener { view: View -> moveClicked(GameManager.LEFT) } // -1 for left
+        main_BTN_right.setOnClickListener { view: View -> moveClicked(GameManager.RIGHT) }
+        main_BTN_left.setOnClickListener { view: View -> moveClicked(GameManager.LEFT) }
+
+        if (isTilt) {
+            main_BTN_left.visibility = View.INVISIBLE
+            main_BTN_right.visibility = View.INVISIBLE
+        }
     }
 
     private fun findViews() {
@@ -108,15 +126,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initTiltDetector() {
+        tiltDetector = TiltDetector(
+            context = this,
+            tiltCallback = object : TiltCallback {
+                override fun onTilt(direction: Int) {
+                    if(isTilt) {
+                        moveClicked(direction)
+                    }
+                }
+            }
+        )
+    }
+
     override fun onResume() {
         super.onResume()
-        //tiltDetector.start()
+        tiltDetector.start()
        BackgroundMusicPlayer.getInstance().playMusic()
     }
 
     override fun onPause() {
         super.onPause()
-        //tiltDetector.stop()
+        tiltDetector.stop()
         BackgroundMusicPlayer.getInstance().pauseMusic()
     }
 
@@ -125,11 +156,11 @@ class MainActivity : AppCompatActivity() {
             override fun run() {
                 refreshElements()
                 if (!gameManager.isGameOver) {
-                    obstacleHandler.postDelayed(this, OBSTACLE_INTERVAL)
+                    obstacleHandler.postDelayed(this, speed)
                 }
             }
         }
-        obstacleHandler.postDelayed(obstacleRunnable, OBSTACLE_INTERVAL)
+        obstacleHandler.postDelayed(obstacleRunnable, speed)
     }
 
     private fun updateCarPosition() {
@@ -222,6 +253,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, EndActivity::class.java)
         var bundle = Bundle()
         bundle.putString(Constants.BundleKeys.MESSAGE_KEY , message)
+        bundle.putInt(Constants.BundleKeys.SCORE_KEY , gameManager.score)
         intent.putExtras(bundle)
         startActivity(intent)
         finish()

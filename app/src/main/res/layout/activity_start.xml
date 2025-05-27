@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue_200"
+    tools:context=".StartActivity">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/main_LBL_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="@dimen/name_size"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-condensed-medium"
+        tools:text="Race Game" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/start_IMG_icon"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/app_icon"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/main_LBL_title"
+        android:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/buttons_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/start_IMG_icon"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        android:gravity="center">
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/start_BTN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_margin="16dp"
+        android:text="@string/start_text"
+        android:textSize="20dp"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/beige"
+        android:importantForAccessibility="no"/>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fragment_BTN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_margin="16dp"
+        android:text="@string/high_score"
+        android:textSize="20dp"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/beige"
+        android:importantForAccessibility="no"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/speed_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttons_container"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_marginTop="9dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SLOW"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_marginEnd="2dp"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/speed_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumbTint="@color/black"
+            android:trackTint="@color/beige"
+            android:layout_marginEnd="3dp"
+            android:scaleX="1"
+            android:scaleY="1"
+            app:thumbTint="@color/beige"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FAST"
+            android:textColor="@color/black"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/move_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/speed_container"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_marginTop="9dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_marginEnd="2dp"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/move_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumbTint="@color/black"
+            android:trackTint="@color/beige"
+            android:layout_marginEnd="3dp"
+            android:scaleX="1"
+            android:scaleY="1"
+            app:thumbTint="@color/beige"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tilt"
+            android:textColor="@color/black"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+
+
+</RelativeLayout>
