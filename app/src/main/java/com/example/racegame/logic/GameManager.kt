@@ -14,9 +14,6 @@ class GameManager(private val lifeCount: Int = 3) { // default life
         const val OBSTACLE = 1
         const val COIN = 0
 
-//        const val POS_LEFT = 0
-//        const val POS_MIDDLE = 1
-//        const val POS_RIGHT = 2
     }
 
     var crashCount: Int = 0 // the numbers of crash
@@ -43,7 +40,7 @@ class GameManager(private val lifeCount: Int = 3) { // default life
         if (carPosition < 0) carPosition = 0
         if (carPosition > (NUM_POSITIONS-1)) carPosition = NUM_POSITIONS-1
     }
-// -----------------------------------
+
     fun generateElementPosition(element: Int): Int {
         var elementPosition = (0..4).random()
         if(element == OBSTACLE)
